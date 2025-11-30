@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>爱丽丝庭院 · 登录</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div class="fog"></div>
+
+<header>
+  <h1>爱丽丝庭院</h1>
+</header>
+
+<div id="bubbleClock">
+  <span id="clockText"></span>
+</div>
+
+
+<!-- Azalea Maid Blocking Screen -->
+<div id="azalea-block" class="azalea-block">
+    <video id="azalea-video" autoplay muted playsinline loop>
+        <source src="image/azalea/azaleaop.webm" type="video/webm">
+    </video>
+    <div class="azalea-text">
+        <p id="azalea-msg">庭院开放时间 / Courtyard info</p>
+    </div>
+</div>
+
+<div class="container">
+  <!-- LOGIN -->
+  <div id="loginBox" class="box active">
+    <h2>欢迎回来</h2>
+    <input id="loginNick" placeholder="昵称"><br>
+    <input id="loginPass" type="password" placeholder="密码"><br>
+    <button id="loginBtn">进入庭院</button>
+    <br><br>
+    <a href="#" id="toRegister">还没有庭院钥匙？点这里注册</a>
+  </div>
+
+  <!-- REGISTER -->
+  <div id="registerBox" class="box">
+    <h2>领取庭院钥匙</h2>
+    <input id="regNick" placeholder="想被称呼的昵称"><br>
+    <input id="regPass" type="password" placeholder="密码（字母+数字）"><br>
+    <input id="regPass2" type="password" placeholder="再次输入密码"><br>
+    <button id="registerBtn">注册</button>
+    <br><br>
+    <a href="#" id="toLogin">已有钥匙？返回登录</a>
+  </div>
+</div>
+
+<!-- 幸福碎片装饰 -->
+<div class="fragment" style="left:12%;top:25%;animation-delay:0s;"></div>
+<div class="fragment" style="left:88%;top:30%;animation-delay:1.2s;"></div>
+<div class="fragment" style="left:8%;top:70%;animation-delay:2.3s;"></div>
+<div class="fragment" style="left:80%;top:75%;animation-delay:3.1s;"></div>
+
+<!-- 登录成功对白动画 -->
+<div id="dialogue">
+  <div class="dialogue-box">
+    <div class="dialogue-text" id="dialogueText"></div>
+    <button id="enterGarden" style="margin-top:20px; padding:10px 30px; font-size:1rem;">进入庭院 →</button>
+  </div>
+</div>
+
+<!-- 引入 JS -->
+<script src="js/index.js"></script>
+<script src="js/agreement.js"></script>
+<script src="js/azaleablocking.js"></script>
+<script src="js/bubbledigitalclock.js"></script>
+</body>
+</html>

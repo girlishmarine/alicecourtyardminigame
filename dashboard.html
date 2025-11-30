@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>爱丽丝庭院 · 大厅</title>
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+  <canvas id="particles"></canvas>
+  <div class="fog" id="fog"></div>
+
+  <header><h1>爱丽丝庭院</h1></header>
+  
+      <!-- 圆形漂浮气泡 -->
+    <div id="bubble-bgm">
+        <div class="btn-wrap">
+            <span id="btn-play" class="btn">🎵</span>
+            <span id="btn-stop" class="btn" style="display:none;">⏹️</span>
+            <span id="btn-next" class="btn">⏭️</span>
+        </div>
+    </div>
+
+    <!-- 音频 -->
+    <audio id="audio"></audio>
+	
+
+  <!-- 古典怀表 -->
+  <div class="clock">
+    <div class="hand hour" id="hour"></div>
+    <div class="hand minute" id="minute"></div>
+    <div class="hand second"></div>
+  </div>
+
+  <!-- 用户信息卡 -->
+  <div class="user-card">
+    <h2>欢迎回来，<span id="nickname" style="color:#ffb3f1;"></span></h2>
+    <p class="title-glow">称号：<span id="title"></span></p>
+  </div>
+
+  <!-- 功能按钮 -->
+  <div class="actions">
+    <button class="btn" onclick="startJourney()">开始旅程</button>
+    <button class="btn" onclick="openGallery()">卡片图鉴</button>
+    <button class="btn" onclick="logout()">离开庭院</button>
+  </div>
+
+  <!-- 常驻幸福碎片 -->
+  <div class="fragment" style="left:10%;top:20%;animation-delay:0s;"></div>
+  <div class="fragment" style="left:90%;top:25%;animation-delay:1s;"></div>
+  <div class="fragment" style="left:15%;top:75%;animation-delay:2s;"></div>
+  <div class="fragment" style="left:85%;top:70%;animation-delay:3s;"></div>
+
+  <script src="js/dashboard.js"></script>
+  <script src="js/bubblebgmplayer.js"></script>
+  <script src="js/moecat.js"></script>
+
+</body>
+</html>
