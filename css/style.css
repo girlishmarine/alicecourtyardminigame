@@ -1,0 +1,253 @@
+/* ================== 全局重置 ================== */
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  height: 100vh;
+  background: 
+    radial-gradient(circle at 20% 80%, #6e40aa44, transparent 50%),
+    radial-gradient(circle at 80% 20%, #b894ff44, transparent 50%),
+    radial-gradient(circle at 50% 50%, #4a2d80, #1a0f2e);
+  overflow: hidden;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  color: #eee;
+}
+
+/* ================== 背景雾效 ================== */
+.fog {
+  position: fixed; inset: 0; pointer-events: none;
+  background: 
+    radial-gradient(circle at 30% 30%, #c8b3ff33, transparent 60%),
+    radial-gradient(circle at 70% 70%, #ff9eec33, transparent 60%);
+  filter: blur(60px);
+  animation: breath 25s ease-in-out infinite;
+}
+
+#particles { position: fixed; inset: 0; pointer-events: none; }
+
+/* ================== 顶部标题 ================== */
+header {
+  position: fixed; top: 0; left: 0; right: 0;
+  text-align: center; padding: 40px 20px 20px;
+  pointer-events: none; z-index: 100;
+}
+h1 {
+  font-size: 4rem; font-weight: 300; letter-spacing: 8px;
+  background: linear-gradient(90deg, #e0c3fc, #ffb3f1, #c3f4ff);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 40px rgba(224,195,252,0.6);
+}
+
+/* ================== 登录注册容器 ================== */
+.container {
+  height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; z-index: 10;
+}
+
+.box {
+  display: none;
+  width: 380px; padding: 40px 35px;
+  border-radius: 24px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(20px) brightness(1.4);
+  box-shadow: 
+    0 8px 32px rgba(0,0,0,0.3),
+    0 0 40px rgba(180,120,255,0.4),
+    inset 0 0 30px rgba(255,255,255,0.08);
+  text-align: center;
+  transition: all 0.6s ease;
+}
+.box.active { display: block; animation: fadeIn 0.8s ease; }
+.box:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 60px rgba(180,120,255,0.6);
+}
+
+/* ================== 输入框 ================== */
+input {
+  width: 100%; padding: 14px 16px; margin: 12px 0;
+  border: none; border-radius: 12px;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px);
+  color: #fff; font-size: 1rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  transition: all 0.3s;
+}
+input:focus {
+  outline: none;
+  background: rgba(255,255,255,0.2);
+  box-shadow: 0 0 20px rgba(200,150,255,0.6);
+}
+input::placeholder { color: #ddd; }
+
+/* ================== 按钮 ================== */
+button {
+  margin: 20px 0 10px;
+  padding: 14px 50px;
+  font-size: 1.2rem;
+  background: linear-gradient(45deg, rgba(255,180,240,0.3), rgba(180,140,255,0.3));
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 50px;
+  color: #fff; cursor: pointer;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 30px rgba(200,150,255,0.5);
+  transition: all 0.4s;
+}
+button:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 50px rgba(200,150,255,0.8);
+}
+button:active { transform: scale(0.98); }
+
+/* ================== 链接 ================== */
+a {
+  color: #e0c3fc; text-decoration: none; font-size: 0.95rem;
+  transition: all 0.3s;
+}
+a:hover { color: #ffb3f1; text-shadow: 0 0 10px #ffb3f1; }
+
+/* ================== 幸福碎片装饰 ================== */
+.fragment {
+  position: absolute; width: 16px; height: 16px;
+  background: radial-gradient(circle, #fffae8, #ffd4e8);
+  border-radius: 50%; box-shadow: 0 0 25px #ffd9e8;
+  pointer-events: none;
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ================== 登录成功对白框 ================== */
+#dialogue {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.4); backdrop-filter: blur(8px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.6s;
+}
+#dialogue.show { opacity: 1; pointer-events: all; }
+
+.dialogue-box {
+  width: 420px; padding: 35px;
+  background: rgba(255,255,255,0.09);
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 60px rgba(180,120,255,0.6);
+  text-align: center;
+  color: #fff;
+}
+.dialogue-text {
+  font-size: 1.3rem; line-height: 1.8;
+  min-height: 60px;
+  margin: 20px 0;
+}
+.typing::after { content: '|'; animation: blink 1s infinite; }
+
+/* ================== 动画 ================== */
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes float { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-18px) rotate(12deg); } }
+@keyframes breath { 0%,100% { opacity:0.6; } 50% { opacity:1; } }
+
+
+/* Azalea 出场淡入 */
+@keyframes azaleaFadeIn {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+#azalea-block {
+    position: fixed;
+    z-index: 99999; /* 永远最上层 */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; /* 超出部分裁剪 */
+    pointer-events: auto;
+    animation: azaleaFadeIn 1.8s ease forwards;
+    background: transparent;
+}
+
+#azalea-block video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;    /* 保证覆盖宽度 */
+    min-height: 100%;   /* 保证覆盖高度 */
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;  /* 填充屏幕，保持比例 */
+    pointer-events: none;
+    z-index: 1;
+}
+
+#azalea-block .azalea-text {
+    position: absolute;
+    bottom: 10%;
+    width: 100%;
+    text-align: center;
+    font-size: 1.5rem;
+    color: #ffd700;
+    text-shadow: 0 0 8px #8a2be2;
+    z-index: 2; /* 确保文字在视频之上 */
+}
+
+/* Bubble Clock 外观 */
+#bubble-clock {
+    position: fixed;
+    top: 20%;
+    left: 20%;
+    padding: 14px 22px;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(6px);
+    border-radius: 40px;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    box-shadow: 0 0 18px rgba(255,255,255,0.6);
+    color: #333;
+    font-size: 1.2rem;
+    font-family: "Consolas", "Courier New", monospace;
+    z-index: 999998;
+    cursor: pointer;
+    transition: transform 0.3s ease-out;
+    animation: float 4s ease-in-out infinite;
+    user-select: none;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+/* 气泡本体 */
+#bubbleClock {
+  position: fixed;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  width: 180px;
+  height: 180px;
+  background-image: url("../image/bubbledigitalclock.png");  /* 改这里就行！ */
+  background-size: cover;
+  background-position: center;
+  pointer-events: auto;
+  z-index: 999997;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  user-select: none;
+  box-shadow: 0 0 25px rgba(255,255,255,0.3);
+}
+
+/* 发光数字 */
+#clockText {
+  font-family: "Consolas", monospace;
+  font-size: 28px;
+  color: #fff;
+  text-shadow: 0 0 8px #9cf, 0 0 15px #aef;
+  pointer-events: none;
+}
+

@@ -1,0 +1,163 @@
+* { margin:0; padding:0; box-sizing:border-box; }
+body { 
+  height:100vh; overflow:hidden; 
+  font-family:"Segoe UI","Microsoft YaHei",sans-serif; 
+  color:#eee; 
+}
+canvas { 
+  position: fixed; 
+  inset: 0; 
+  pointer-events: none; 
+}
+
+.fog { 
+  position: fixed; 
+  inset: 0; 
+  pointer-events: none; 
+  filter: blur(70px); 
+  opacity: 0.7; 
+  transition: opacity 8s; 
+}
+
+/* 四套时间背景（暗色紫调） */
+.bg-morning { 
+  background: radial-gradient(circle at 30% 30%, #4b2c57aa, #1e0f2d88),
+              radial-gradient(circle at 70% 70%, #301b44bb, #000000cc);
+}
+
+.bg-noon { 
+  background: radial-gradient(circle at 20% 80%, #36264caa, #0a051b88),
+              radial-gradient(circle at 80% 20%, #5c2f68bb, #100020cc);
+}
+
+.bg-evening { 
+  background: radial-gradient(circle at 30% 30%, #5e3b6aaa, #1f0b2b88),
+              radial-gradient(circle at 70% 70%, #7a2c63bb, #220021cc);
+}
+
+.bg-night { 
+  background: radial-gradient(circle at 20% 80%, #3b1f52aa, #0a051c88),
+              radial-gradient(circle at 80% 20%, #6a2c6abb, #120020cc);
+}
+
+header h1 {
+  position:fixed; top:30px; left:50%; transform:translateX(-50%);
+  font-size:4.5rem; font-weight:300; letter-spacing:10px;
+  background:linear-gradient(90deg,#e0c3fc,#ffb3f1,#c3f4ff);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-shadow:0 0 40px rgba(224,195,252,0.6); z-index:10;
+}
+
+/* 古典怀表 */
+.clock {
+  position: relative;
+  width:240px; height:240px;
+  border-radius:50%;
+  background:radial-gradient(circle,#fff9e022,#0000),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><circle cx="120" cy="120" r="118" fill="none" stroke="%23ffffff33" stroke-width="4"/><circle cx="120" cy="120" r="100" fill="%2333225566" opacity="0.4"/><text x="120" y="80" text-anchor="middle" fill="%23eee" font-size="20">XII</text><text x="120" y="165" text-anchor="middle" fill="%23eee" font-size="20">VI</text><text x="70" y="125" text-anchor="middle" fill="%23ddd">IX</text><text x="170" y="125" text-anchor="middle" fill="%23ddd">III</text></svg>') center/100%;
+  box-shadow:0 0 60px rgba(180,120,255,0.6), inset 0 0 40px rgba(0,0,0,0.4);
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.hand {
+  position:absolute; left:50%; top:50%;
+  transform-origin: 50% 100%;
+  transform: translate(-50%, -100%);
+  border-radius:4px;
+}
+.hour   { width:6px; height:70px; background:#e0c3fc; box-shadow:0 0 15px #e0c3fc; }
+.minute { width:4px; height:90px; background:#ffb3f1; box-shadow:0 0 20px #ffb3f1; }
+.second { width:2px; height:100px; background:#ffd700; box-shadow:0 0 20px #ffd700; animation:second 60s steps(60) infinite; }
+
+/* 用户卡片 */
+.user-card {
+  position:absolute; top:120px; left:50%; transform:translateX(-50%);
+  width:380px; padding:30px; text-align:center;
+  background:rgba(255,255,255,0.08); border-radius:24px;
+  border:1px solid rgba(255,255,255,0.2); backdrop-filter:blur(20px);
+  box-shadow:0 0 50px rgba(180,120,255,0.5);
+  z-index:11;
+}
+.title-glow { font-size:1.4rem; color:#ffb3f1; text-shadow:0 0 20px #ffb3f1; }
+
+/* 按钮区 */
+.actions {
+  position:absolute; bottom:100px; left:50%; transform:translateX(-50%);
+  display:flex; gap:30px; z-index:11;
+}
+.btn {
+  padding:16px 40px; font-size:1.3rem; cursor:pointer;
+  background:linear-gradient(45deg,rgba(255,180,240,0.3),rgba(180,140,255,0.3));
+  border:1px solid rgba(255,255,255,0.3); border-radius:50px; color:#fff;
+  backdrop-filter:blur(10px); box-shadow:0 0 30px rgba(200,150,255,0.6);
+  transition:all 0.4s; position:relative; overflow:hidden;
+}
+.btn:hover { transform:scale(1.1); box-shadow:0 0 50px rgba(200,150,255,1); }
+.btn::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg,transparent,#ffffff33,transparent);
+  transform:translateX(-100%); transition:0.8s;
+}
+.btn:hover::after { transform:translateX(100%); }
+
+/* 幸福碎片 */
+.fragment {
+  position:absolute; width:16px; height:16px;
+  background:radial-gradient(circle,#fffae8,#ffd4e8);
+  border-radius:50%; box-shadow:0 0 25px #ffd9e8;
+  pointer-events:none; animation:float 5s ease-in-out infinite;
+}
+
+@keyframes swing { 0%,100% { transform:translateX(-50%) rotate(-4deg); } 50% { transform:translateX(-50%) rotate(4deg); } }
+@keyframes float { 0%,100% { transform:translateY(0) rotate(0deg); } 50% { transform:translateY(-20px) rotate(15deg); } }
+@keyframes second { from { transform:translate(-50%,-100%) rotate(0deg); } to { transform:translate(-50%,-100%) rotate(360deg); } }
+
+
+/* 气泡外观 */
+#bubble-bgm {
+    position: fixed;
+    width: 160px;
+    height: 160px;
+    bottom: 120px;
+    right: 40px;
+    background-image: url("../image/bubblebgmplayer.png");  /* 改这里就行！ */
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    box-shadow: 0 8px 32px rgba(135, 206, 250, 0.4);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 999999;
+    cursor: grab;
+    user-select: none;
+
+    transition: all 0.25s ease;
+}
+
+#bubble-bgm:active {
+    cursor: grabbing;
+}
+
+/* 按钮区 */
+.btn-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 36px;
+    user-select: none;
+	opacity: 0.5;
+}
+
+.btn {
+    cursor: pointer;
+    user-select: none;
+}
+
+/* 禁止手机 hover */
+@media (hover: none) {
+    .btn:active { opacity: 0.6; }
+}
