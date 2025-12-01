@@ -3,7 +3,7 @@
   const azaleaBlock = document.getElementById('azalea-block');
   const azaleaMsg   = document.getElementById('azalea-msg');
 
-  // 让外部可使用 azaleaBlock （关键修复）
+  // 让外部可使用 azaleaBlock
   window.__azaleaBlock = azaleaBlock;
 
   function isCourtyardOpen() {
@@ -11,20 +11,13 @@
     const h = d.getHours();
     const m = new Date().getMinutes();
 
-    // 营业时间规则：
-    // 00:00 ~ 06:00（包含 06:00）关门
-    // 06:01 ~ 23:59 开门
-    if (h < 6 || (h === 6 && m === 0)) {
-      return false; // 关门
-    }
-
-    return true; // 开门
+    // 营业时间：00:00 ~ 06:00（含 06:00）关门，06:01 ~ 23:59 开门
+    if (h < 6 || (h === 6 && m === 0)) return false;
+    return true;
   }
 
   function updateAzaleaBlock() {
     const open = isCourtyardOpen();
-    const h = new Date().getHours();
-    const m = new Date().getMinutes();
 
     if (open) {
       azaleaBlock.style.display = 'none';
@@ -35,50 +28,65 @@
     }
   }
 
-  window.updateAzaleaBlock = updateAzaleaBlock; // 暴露出去（关键）
+  window.updateAzaleaBlock = updateAzaleaBlock;
 
   updateAzaleaBlock();
   setInterval(updateAzaleaBlock, 1000);
 
 })();
-  
 
-// --- Azalea 点击彩蛋事件（三个透明区域） ---
+
+// --- Azalea 点击彩蛋事件（三个 50px 透明按钮） ---
 function setupAzaleaTouchZones() {
-  const azaleaBlock = window.__azaleaBlock; // 使用外部引用
+  const azaleaBlock = window.__azaleaBlock;
   if (!azaleaBlock) return;
 
-  const zones = [
-    { id: 'azalea-head',    lines: ['别…乱摸头发。', '你在…摸哪里？', '……（轻轻把你的手推开）'] },
-    { id: 'azalea-body',    lines: ['请勿触碰中枢模块。', '……（身体微微躲开）', '你这是违规行为。'] },
-    { id: 'azalea-legs',    lines: ['……腿部不接受触碰。', '你…这样会被记录。', '还不睡吗？'] }
+  // 小按钮参数（50 × 50 px，固定位置百分比）
+  const buttons = [
+    {
+      id: 'azalea-head-btn',
+      top: '18%',
+      left: '60%',
+      lines: ['别…乱摸头发。', '你在…摸哪里？', '……（轻轻把你的手推开）']
+    },
+    {
+      id: 'azalea-body-btn',
+      top: '48%',
+      left: '60%',
+      lines: ['请勿触碰中枢模块。', '……（身体微微躲开）', '你这是违规行为。']
+    },
+    {
+      id: 'azalea-legs-btn',
+      top: '78%',
+      left: '60%',
+      lines: ['……腿部不接受触碰。', '你…这样会被记录。', '还不睡吗？']
+    }
   ];
 
-  zones.forEach(zone => {
-    let div = document.createElement('div');
-    div.id = zone.id;
+  buttons.forEach(btn => {
+    const div = document.createElement('div');
+    div.id = btn.id;
 
     Object.assign(div.style, {
       position: 'absolute',
-      left: '0',
-      width: '100%',
-      height: '33%',
-      zIndex: '99999',
+      width: '50px',
+      height: '50px',
+      borderRadius: '50%',
+      left: btn.left,
+      top: btn.top,
+      transform: 'translate(-50%, -50%)',
+      backgroundColor: 'rgba(255,0,0,0)', // 完全透明
       cursor: 'pointer',
-      backgroundColor: 'transparent'
+      zIndex: '99999'
+    });
+
+    div.addEventListener('click', () => {
+      const text = btn.lines[Math.floor(Math.random() * btn.lines.length)];
+      showAzaleaBubble(text);
     });
 
     azaleaBlock.appendChild(div);
-
-    div.addEventListener('click', () => {
-      const text = zone.lines[Math.floor(Math.random() * zone.lines.length)];
-      showAzaleaBubble(text);
-    });
   });
-
-  document.getElementById('azalea-head').style.top = '0';
-  document.getElementById('azalea-body').style.top = '33%';
-  document.getElementById('azalea-legs').style.top = '66%';
 }
 
 
@@ -119,7 +127,8 @@ window.updateAzaleaBlock = function () {
   const azaleaBlock = window.__azaleaBlock;
 
   if (azaleaBlock && azaleaBlock.style.display === 'block') {
-    if (!document.getElementById('azalea-head')) {
+    // 初始化一次小按钮
+    if (!document.getElementById('azalea-head-btn')) {
       setupAzaleaTouchZones();
     }
   }
