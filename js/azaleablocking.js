@@ -11,28 +11,35 @@
   function isCourtyardOpen() {
     const d = new Date();
     const h = d.getHours();
-    // 开放时间：每天 12:00（中午） ~ 次日 06:00
-    return h >= 12 || h < 6;
+    const m = d.getMinutes();
+
+    // 营业时间规则：
+    // 00:00 ~ 06:00（包含 06:00）关门
+    // 06:01 ~ 23:59 开门
+
+    if (h < 6 || (h === 6 && m === 0)) {
+      return false; // 关门
+    }
+
+    return true; // 开门
   }
 
   function updateAzaleaBlock() {
     const open = isCourtyardOpen();
     const h = new Date().getHours();
+    const m = new Date().getMinutes();
 
     if (open) {
       // 开放中 → 隐藏 Azalea
       azaleaBlock.style.display = 'none';
+
     } else {
       // 关闭中 → 显示 Azalea
       azaleaBlock.style.display = 'block';
       azaleaBlock.style.animation = 'azaleaFadeIn 2s ease-out forwards';
 
-      // 根据当前时间段显示不同的提示文字
-      if (h >= 6 && h < 12) {
-        azaleaMsg.textContent = '庭院 12:00 PM 开放 / Courtyard opens at 12:00 PM';
-      } else {
-        azaleaMsg.textContent = '庭院已关闭，明日 12:00 PM 再来哦~ / Closed, see you tomorrow ♡';
-      }
+      // 提示：庭院 06:01 AM 开放
+      azaleaMsg.textContent = '庭院 06:01 AM 开放 / Courtyard opens at 06:01 AM';
     }
   }
 
@@ -42,12 +49,12 @@
   // 每秒检查一次（与时钟气泡完全同步，不多不少）
   setInterval(updateAzaleaBlock, 1000);
 
-  // 可选：凌晨 6 点或中午 12 点整时加个小彩蛋动画
+  // 可选：每天 06:01 或 00:00 的彩蛋动画（你想开的话）
   // setInterval(() => {
   //   const h = new Date().getHours();
   //   const m = new Date().getMinutes();
-  //   if ((h === 12 || h === 6) && m === 0) {
-  //     azaleaBlock.style.animation = 'azaleaFadeIn 1s ease 3; // 闪三下
+  //   if ((h === 6 && m === 1) || (h === 0 && m === 0)) {
+  //     azaleaBlock.style.animation = 'azaleaFadeIn 1s ease 3'; // 闪三下
   //   }
   // }, 60000);
 
