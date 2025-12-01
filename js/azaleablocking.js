@@ -1,47 +1,49 @@
-// js/azaleablocking.js   ← 终极版，永久与时钟气泡时间一致
+// js/azaleablocking.js ← 极简版，只加载时判断，不轮询
 (() => {
   const azaleaBlock = document.getElementById('azalea-block');
   const azaleaMsg   = document.getElementById('azalea-msg');
 
-  // 让外部可使用 azaleaBlock
+  if (!azaleaBlock) return;
+
   window.__azaleaBlock = azaleaBlock;
 
+  // 判断庭院是否开门
   function isCourtyardOpen() {
-    const d = new Date();
-    const h = d.getHours();
-    const m = new Date().getMinutes();
+    const now = new Date();
+    const h = now.getHours();
+    const m = now.getMinutes();
 
-    // 营业时间：00:00 ~ 06:00（含 06:00）关门，06:01 ~ 23:59 开门
+    // 营业时间：00:00 ~ 06:00（含06:00）关门，06:01 ~ 23:59 开门
     if (h < 6 || (h === 6 && m === 0)) return false;
     return true;
   }
 
-  function updateAzaleaBlock() {
-    const open = isCourtyardOpen();
-
-    if (open) {
+  // 初始化 Azalea 显示状态
+  function initAzalea() {
+    if (isCourtyardOpen()) {
       azaleaBlock.style.display = 'none';
     } else {
       azaleaBlock.style.display = 'block';
       azaleaBlock.style.animation = 'azaleaFadeIn 2s ease-out forwards';
       azaleaMsg.textContent = '庭院 06:01 AM 开放 / Courtyard opens at 06:01 AM';
+      setupAzaleaTouchZones(); // 只生成一次小按钮
     }
   }
 
-  window.updateAzaleaBlock = updateAzaleaBlock;
+  window.updateAzaleaBlock = initAzalea;
 
-  updateAzaleaBlock();
-  setInterval(updateAzaleaBlock, 1000);
-
+  initAzalea(); // 页面加载立即执行
 })();
 
 
-// --- Azalea 点击彩蛋事件（三个 50px 透明按钮） ---
+// --- Azalea 点击彩蛋事件（50px 小按钮） ---
 function setupAzaleaTouchZones() {
   const azaleaBlock = window.__azaleaBlock;
   if (!azaleaBlock) return;
 
-  // 小按钮参数（50 × 50 px，固定位置百分比）
+  // 避免重复生成
+  if (document.getElementById('azalea-head-btn')) return;
+
   const buttons = [
     {
       id: 'azalea-head-btn',
@@ -90,7 +92,7 @@ function setupAzaleaTouchZones() {
 }
 
 
-// --- 显示对白气泡 ---
+// --- 显示 Azalea 对白气泡 ---
 function showAzaleaBubble(text) {
   const azaleaBlock = window.__azaleaBlock;
   if (!azaleaBlock) return;
@@ -100,7 +102,7 @@ function showAzaleaBubble(text) {
 
   Object.assign(bubble.style, {
     position: 'absolute',
-    bottom: '110%',
+    bottom: '90%', // 改成 90% 更安全，不易跑出屏幕
     left: '50%',
     transform: 'translateX(-50%)',
     padding: '8px 14px',
@@ -117,19 +119,3 @@ function showAzaleaBubble(text) {
   setTimeout(() => bubble.remove(), 2000);
 }
 
-
-// --- 让彩蛋区在 Azalea “出现”时启用 ---
-const _originalUpdateAzaleaBlock = window.updateAzaleaBlock;
-
-window.updateAzaleaBlock = function () {
-  _originalUpdateAzaleaBlock();
-
-  const azaleaBlock = window.__azaleaBlock;
-
-  if (azaleaBlock && azaleaBlock.style.display === 'block') {
-    // 初始化一次小按钮
-    if (!document.getElementById('azalea-head-btn')) {
-      setupAzaleaTouchZones();
-    }
-  }
-};
