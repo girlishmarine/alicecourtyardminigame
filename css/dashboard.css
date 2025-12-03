@@ -41,11 +41,20 @@ canvas {
 }
 
 header h1 {
-  position:fixed; top:30px; left:50%; transform:translateX(-50%);
-  font-size:4.5rem; font-weight:300; letter-spacing:10px;
-  background:linear-gradient(90deg,#e0c3fc,#ffb3f1,#c3f4ff);
-  -webkit-background-clip:text; background-clip:text; color:transparent;
-  text-shadow:0 0 40px rgba(224,195,252,0.6); z-index:10;
+  position: fixed;
+  top: clamp(32px, 6vw, 50px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 300;
+  letter-spacing: clamp(3px, 1.5vw, 8px);
+  background: linear-gradient(90deg, #e0c3fc, #ffb3f1, #c3f4ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 clamp(20px, 5vw, 40px) rgba(224,195,252,0.6);
+  z-index: 10;
+  white-space: nowrap;
+  font-size: clamp(2rem, 7.5vw, 4.5rem);   /* 这一行解决所有适配问题 */
 }
 
 /* 古典怀表 */
@@ -161,3 +170,4 @@ header h1 {
 @media (hover: none) {
     .btn:active { opacity: 0.6; }
 }
+
