@@ -71,8 +71,8 @@ function setupAzaleaTouchZones() {
 
     Object.assign(div.style, {
       position: 'absolute',
-      width: '50px',
-      height: '50px',
+      width: '100px',
+      height: '100px',
       borderRadius: '50%',
       left: btn.left,
       top: btn.top,
@@ -118,4 +118,5 @@ function showAzaleaBubble(text) {
 
   setTimeout(() => bubble.remove(), 2000);
 }
+
 
