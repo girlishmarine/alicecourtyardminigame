@@ -1,7 +1,6 @@
 // ==================== 登录检查 ====================
 const nickname = localStorage.getItem("nickname");
 const title = localStorage.getItem("title") || "初到庭院者";
-
 if (!nickname) {
   alert("请先登录哦～");
   window.location.href = "login.html";
@@ -15,9 +14,8 @@ function updateTimeTheme() {
   const h = new Date().getHours();
   const body = document.body;
   const fog = document.getElementById("fog");
-
   body.classList.remove("bg-morning","bg-noon","bg-evening","bg-night");
-
+  
   if (h >= 5 && h < 10) { // 早晨
     body.classList.add("bg-morning");
     fog.style.background = "radial-gradient(circle at 40% 40%, #5e3b6aaa55, transparent 60%)";
@@ -32,31 +30,43 @@ function updateTimeTheme() {
     fog.style.background = "radial-gradient(circle at 30% 30%, #3b1f52aa, transparent 60%), radial-gradient(circle at 70% 70%, #6a2c6abb44, transparent 60%)";
   }
 }
-
 updateTimeTheme();
 setInterval(updateTimeTheme, 60000);
 
-
-// ==================== 真实时钟 ====================
+// ==================== 真实时钟（改为 rAF，丝滑又省电）===================
 function updateClock() {
   const now = new Date();
-  const h = now.getHours() % 12 / 12 * 360 + now.getMinutes() * 0.5; // 时针会随分针缓慢移动
-  const m = now.getMinutes() * 6;
-  document.getElementById("hour").style.transform = `translate(-50%, -100%) rotate(${h}deg)`;
-  document.getElementById("minute").style.transform = `translate(-50%, -100%) rotate(${m}deg)`;
+  const seconds = now.getSeconds() + now.getMilliseconds() / 1000;
+  const minutes = now.getMinutes() + seconds / 60;
+  const hours = (now.getHours() % 12) + minutes / 60;
+
+  document.getElementById("hour").style.transform = 
+    `translate(-50%, -100%) rotate(${hours * 30}deg)`;
+  document.getElementById("minute").style.transform = 
+    `translate(-50%, -100%) rotate(${minutes * 6}deg)`;
+
+  requestAnimationFrame(updateClock);
 }
 updateClock();
-setInterval(updateClock, 1000);
 
-// ==================== 粒子 + 鼠标互动碎片 ====================
+// ==================== 粒子 + 鼠标互动（加上后台/滚动暂停，手机不发热）===================
 const canvas = document.getElementById('particles');
 const ctx = canvas.getContext('2d');
+let isTabActive = true;
+
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 window.onresize = () => {
   canvas.width = innerWidth;
   canvas.height = innerHeight;
 };
+
+// 页面切后台或滚动时暂停粒子
+window.addEventListener('visibilitychange', () => isTabActive = !document.hidden);
+window.addEventListener('scroll', () => {
+  isTabActive = false;
+  setTimeout(() => isTabActive = true, 3000); // 滚动完3秒后恢复
+});
 
 const particles = [];
 for (let i = 0; i < 80; i++) {
@@ -77,6 +87,11 @@ document.addEventListener('mousemove', e => {
 });
 
 function drawParticles() {
+  if (!isTabActive) {
+    setTimeout(drawParticles, 500); // 后台每0.5秒画一次，几乎不耗电
+    return;
+  }
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   particles.forEach(p => {
     p.x += p.vx;
@@ -84,7 +99,6 @@ function drawParticles() {
     if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
     if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
 
-    // 鼠标靠近就躲开（像小精灵）
     const dx = p.x - mouseX;
     const dy = p.y - mouseY;
     const dist = Math.hypot(dx, dy);
@@ -98,6 +112,7 @@ function drawParticles() {
     ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
     ctx.fill();
   });
+
   requestAnimationFrame(drawParticles);
 }
 drawParticles();
@@ -112,21 +127,30 @@ function logout() {
   }
 }
 
+// ==================== 每日00:00强制自动登出（每5分钟检查一次，永不错过）===================
+let hasLoggedOutToday = false;
 
-// ==================== 每日00:00自动登出 ====================
-function autoLogoutAtMidnight() {
+function checkMidnightLogout() {
   const now = new Date();
-  const h = now.getHours();
-  const m = now.getMinutes();
-  const s = now.getSeconds();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
 
-  // 判断是否 00:00:00
-  if (h === 0 && m === 0 && s === 0) {
-    alert("已经到午夜，自动登出回到首页～");
-    localStorage.clear(); // 清空登录信息
+  // 00:00 ~ 00:04 之内触发一次强制登出
+  if (hours === 0 && minutes < 5 && !hasLoggedOutToday) {
+    hasLoggedOutToday = true;
+    localStorage.clear();
+    alert("庭院已闭园，明天再来哦～");
     window.location.href = "index.html";
+  }
+
+  // 每天00:05之后重置标记，准备明天
+  if (hours === 0 && minutes >= 5) {
+    hasLoggedOutToday = false;
   }
 }
 
-// 每秒检查一次
-setInterval(autoLogoutAtMidnight, 1000);
+// 页面加载立即检查一次（防止正好打开时是00:01）
+checkMidnightLogout();
+
+// 每5分钟检查一次（省电300倍，不会错过午夜）
+setInterval(checkMidnightLogout, 300000); // 300000ms = 5分钟
